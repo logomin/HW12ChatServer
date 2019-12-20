@@ -1,8 +1,10 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class ServerForChat {
 
     public static ArrayList<ServerThread> clientsList = new ArrayList<>();
@@ -10,10 +12,19 @@ public class ServerForChat {
     public static void main(String[] args) {
         Socket socket;
         try (ServerSocket serverSocket = new ServerSocket(1025)) {
-            socket = serverSocket.accept();
-            clientsList.add(new ServerThread(socket)); // добавление в список нового подключения
+            while (true) {
+                socket = serverSocket.accept();
+                clientsList.add(new ServerThread(socket)); // добавление в список нового подключения
+                System.out.println("Клиент подключился");
+                for (ServerThread var: clientsList){
+                    System.out.print(var.socket.toString() + " ");
+                }
+                System.out.print("\n");
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            //System.out.println("Клиент отключился");
+            //ServerForChat.clientsList.remove();
         }
     }
 }
